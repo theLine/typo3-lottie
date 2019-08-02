@@ -1,0 +1,11 @@
+{
+  "dependencies": {
+    "gulp": "^4.0.2",
+    "in-view": "^0.6.1",
+    "lottie-web": "^5.5.7",
+    "merge-stream": "^2.0.0"
+  },
+  "name": "typo3-lottie",
+  "version": "1.0.0",
+  "license": "GPL-3.0"
+}
