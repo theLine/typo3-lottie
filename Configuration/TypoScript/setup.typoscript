@@ -1,0 +1,22 @@
+
+page.includeJSFooterlibs {
+	# Include lottie library, you may want to use a CDN or remove this to include
+	# this yourself with requirejs for example.
+	# Please refer to the GitHub repository for further documentation.
+	# @see https://github.com/airbnb/lottie-web#examples
+	# There are multiple files to include lottie, please have a look into Resources/Public/JavaScript
+	lottieLib = EXT:lottie/Resources/Public/JavaScript/dist/lottie_light.min.js
+	lottieLib.defer = 1
+
+	# Include in-view library to start playing lottie animations when they are
+	# visible in the browser's viewport
+	# @see https://github.com/camwiegert/in-view
+	inview = EXT:lottie/Resources/Public/JavaScript/dist/in-view.min.js
+	inview.defer = 1
+}
+
+# This file will initialize all available lottie instances
+page.includeJSFooter {
+	initializeLottie = EXT:lottie/Resources/Public/JavaScript/dist/initializeLottie.min.js
+	initializeLottie.defer = 1
+}
