@@ -1,0 +1,30 @@
+{
+    "name": "theline/typo3-lottie",
+    "description": "TYPO3 CMS extension to enable rendering of Lottie/Bodymovin animations in frontend.",
+    "type": "typo3-cms-extension",
+    "keywords": [
+        "TYPO3",
+        "extension",
+        "lottie",
+        "bodymovin"
+    ],
+    "authors": [
+        {
+            "name": "theLine",
+            "email": "typo3@theline.capella.uberspace.de"
+        }
+    ],
+    "require": {
+        "php": ">=7.1",
+        "typo3/cms-core": "^8.7 || ^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "TheLine\\Lottie\\": "Classes"
+        }
+    },
+    "replace": {
+        "lottie": "self.version",
+        "typo3-ter/lottie": "self.version"
+    }
+}
