@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<xliff version="1.0">
+	<file source-language="en" datatype="plaintext" original="messages" date="2019-08-02T15:30:00Z" product-name="lottie">
+		<header />
+		<body>
+			<trans-unit id="sys_file_metadata.tx_lottie_is_lottie_animation" xml:space="preserve">
+				<source>Is Lottie/Bodymovin animation</source>
+			</trans-unit>
+		</body>
+	</file>
+</xliff>
