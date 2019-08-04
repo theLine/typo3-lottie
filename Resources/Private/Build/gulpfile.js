@@ -1,43 +1,84 @@
-const { src, dest, series } = require('gulp');
+const {
+	src,
+	dest,
+	series,
+	watch,
+} = require('gulp');
+const {
+	pipeline,
+} = require('stream');
+const clean = require('gulp-clean');
 const merge = require('merge-stream');
+const rename = require('gulp-rename');
+const sourcemaps = require('gulp-sourcemaps');
+const uglify = require('gulp-uglify');
+
+const paths = {
+	src: {
+		lottieFiles: 'node_modules/lottie-web/build/player/*.min.js',
+		inViewFiles: 'node_modules/in-view/dist/*.min.js',
+		js: '../JavaScript/*.js',
+	},
+	dest: {
+		js: '../../Public/JavaScript/dist',
+	}
+};
+
 
 /**
  * Removes all previously generated files
- * @param  {Function} cb
  */
-function clean (cb) {
-	// @TODO: remove generate files
-
-	cb();
-}
+exports.clean = function () {
+	return pipeline(
+		src(paths.dest.js, {
+			allowEmpty: true
+		}),
+		clean({
+			force: true,
+		})
+	);
+};
 
 /**
  * Copies already generated and minified files
  */
-function copy (cb) {
-	const lottieFiles = src('node_modules/lottie-web/build/player/*.min.js');
-	const inViewFiles = src('node_modules/in-view/dist/*.min.js');
-
-	merge(lottieFiles, inViewFiles).pipe(dest('../../Public/JavaScript/dist'));
-
-	cb();
-}
+exports.copy = function () {
+	return pipeline(
+		merge(
+			src(paths.src.lottieFiles),
+			src(paths.src.inViewFiles)
+		),
+		dest(paths.dest.js)
+	);
+};
 
 /**
  * Minifies files
- * @param  {Function} cb
  */
-function build (cb) {
-	// @TODO: generate files
-	cb();
-}
+exports.build = function () {
+	return pipeline(
+		src(paths.src.js),
+		sourcemaps.init(),
+		rename({
+			suffix: '.min'
+		}),
+		uglify(),
+		sourcemaps.write(
+			'.'
+		),
+		dest(paths.dest.js)
+	);
+};
 
+exports.watch = function () {
+	return watch(
+		[paths.src.js],
+		exports.build
+	);
+};
 
-exports.clean = clean;
-exports.copy = copy;
-exports.build = build;
 exports.default = series(
-	clean,
-	copy,
-	build
+	exports.clean,
+	exports.copy,
+	exports.build
 );
