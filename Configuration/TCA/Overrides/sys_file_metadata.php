@@ -1,5 +1,8 @@
 <?php
 
+use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
+use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
 $columns = [
 	'tx_lottie_is_lottie_animation' => [
@@ -8,24 +11,31 @@ $columns = [
 		'config' => [
 			'type' => 'check',
 			'items' => [
-				'1' => 'activated'
+				['', 1],
 			],
 		]
 	],
 ];
 
-// if (TYPO3_branch > 9) {
-// 	$columns['tx_lottie_is_lottie_animation']['config']['renderType'] = 'checkboxToggle';
-// }
+if (
+	VersionNumberUtility::convertVersionNumberToInteger(
+		VersionNumberUtility::getNumericTypo3Version()
+	) >= 9000000
+) {
+	$columns['tx_lottie_is_lottie_animation']['config']['renderType'] = 'checkboxToggle';
+}
 
-// \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addTCAcolumns(
-// 	'sys_file_metadata',
-// 	$columns
-// );
 
-// @FIXME: Only add tx_lottie_is_lottie_animation to file_reference if file is a json file
-// \TYPO3\CMS\Core\Utility\ExtensionManagementUtility::addFieldsToPalette(
-// 	'sys_file_metadata',
-// 	'palletname',
-// 	'tx_lottie_is_lottie_animation'
-// );
+ExtensionManagementUtility::addTCAcolumns(
+	'sys_file_metadata',
+	$columns
+);
+
+ExtensionManagementUtility::addToAllTCAtypes(
+	'sys_file_metadata',
+	implode(',', array_keys($columns)),
+	implode(',', [
+		File::FILETYPE_TEXT,
+		File::FILETYPE_APPLICATION
+	])
+);
