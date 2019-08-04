@@ -5,8 +5,6 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileReference;
 
-// use TheLine\Lottie\Domain\Model\FileReference;
-
 class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface {
 
 	/**
@@ -37,7 +35,6 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		;
 		return (
 			$file->getExtension() === 'json'
-			// @FIXME: for some reason there's negative logic here!
 			&& $file->getProperty('tx_lottie_is_lottie_animation')
 		);
 	}
