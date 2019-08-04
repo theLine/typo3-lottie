@@ -17,6 +17,6 @@ page.includeJSFooterlibs {
 
 # This file will initialize all available lottie instances
 page.includeJSFooter {
-	initializeLottie = EXT:lottie/Resources/Public/JavaScript/dist/initializeLottie.min.js
-	initializeLottie.defer = 1
+	LottieIntialization = EXT:lottie/Resources/Public/JavaScript/dist/LottieIntialization.min.js
+	LottieIntialization.defer = 1
 }
