@@ -4,6 +4,8 @@ namespace TheLine\Lottie\Resource\Rendering;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 
 class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface {
 
@@ -86,6 +88,18 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			'data-bm-renderer' => 'svg',
 		];
 
+		// Dispatch signal to enable modifying of attributes
+		// This Signal expects no return value(s) rather than changes made via pass-by-reference
+		$this->getSignalSlotDispatcher()->dispatch(
+			__CLASS__,
+			'manipulateAttributesBeforeRender',
+			[
+				&$attributes,
+				$file,
+				$this,
+			]
+		);
+
 		// Make sure that all attributes are properly escaped
 		$attributes = implode(' ', array_map(
 			function ($key, $value) {
@@ -96,5 +110,13 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 
 		$output = '<div class="lottie" '. $attributes .'></div>';
 		return $output;
+	}
+
+	/**
+	 * Returns the SignalSlot/Dispatcher instance
+	 * @return Dispatcher
+	 */
+	protected function getSignalSlotDispatcher() {
+		return GeneralUtility::makeInstance(Dispatcher::class);
 	}
 }
