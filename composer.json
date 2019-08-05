@@ -14,6 +14,7 @@
             "email": "typo3@theline.capella.uberspace.de"
         }
     ],
+    "license": "GPL-3.0-only",
     "require": {
         "php": ">=7.1",
         "typo3/cms-core": "^8.7 || ^9.5"
