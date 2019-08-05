@@ -1,8 +1,8 @@
 <?php
 namespace TheLine\Lottie\Resource\Rendering;
 
-use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\File;
+use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 
 class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface {
@@ -57,6 +57,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		$usedPathsRelativeToCurrentScript = false
 	) {
 
+		// It may be useful to know if $file was a File or FileReference
 		$instanceType = '';
 		switch (get_class($file)) {
 			case File::class:
@@ -67,6 +68,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			break;
 		}
 
+		// @TODO: Try to read the width/height and set it accordingly to prevent jumping of content
 		// $styles = [];
 		// if ($width) {
 		// 	$styles[] = 'width:'. (int)$width .'px';
@@ -84,6 +86,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			'data-bm-renderer' => 'svg',
 		];
 
+		// Make sure that all attributes are properly escaped
 		$attributes = implode(' ', array_map(
 			function ($key, $value) {
 				return $key .'="'. htmlspecialchars($value) .'"';
@@ -92,10 +95,6 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		));
 
 		$output = '<div class="lottie" '. $attributes .'></div>';
-
-		// var_dump($output);
-		// die(__METHOD__.':'.__LINE__);
-
 		return $output;
 	}
 }
