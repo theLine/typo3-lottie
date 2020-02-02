@@ -4,9 +4,6 @@ const {
 	series,
 	watch,
 } = require('gulp');
-const {
-	pipeline,
-} = require('stream');
 const clean = require('gulp-clean');
 const merge = require('merge-stream');
 const rename = require('gulp-rename');
@@ -28,49 +25,38 @@ const paths = {
 /**
  * Removes all previously generated files
  */
-exports.clean = function () {
-	return pipeline(
-		src(paths.dest.js, {
-			allowEmpty: true
-		}),
-		clean({
-			force: true,
-		})
-	);
+exports.clean = function _clean() {
+	return src(paths.dest.js, {allowEmpty: true})
+		.pipe(clean({force: true}))
+	;
 };
 
 /**
  * Copies already generated and minified files
  */
-exports.copy = function () {
-	return pipeline(
-		merge(
+exports.copy = function _copy() {
+	return merge(
 			src(paths.src.lottieFiles),
 			src(paths.src.inViewFiles)
-		),
-		dest(paths.dest.js)
-	);
+		)
+		.pipe(dest(paths.dest.js))
+	;
 };
 
 /**
  * Minifies files
  */
-exports.build = function () {
-	return pipeline(
-		src(paths.src.js),
-		sourcemaps.init(),
-		rename({
-			suffix: '.min'
-		}),
-		uglify(),
-		sourcemaps.write(
-			'.'
-		),
-		dest(paths.dest.js)
-	);
+exports.build = function _build() {
+	return src(paths.src.js)
+		.pipe(sourcemaps.init())
+		.pipe(rename({suffix: '.min'}))
+		.pipe(uglify())
+		.pipe(sourcemaps.write('.'))
+		.pipe(dest(paths.dest.js))
+	;
 };
 
-exports.watch = function () {
+exports.watch = function _watch() {
 	return watch(
 		[paths.src.js],
 		exports.build
