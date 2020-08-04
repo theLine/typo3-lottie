@@ -1,7 +1,7 @@
 <?php
 defined('TYPO3_MODE') or die();
 
-call_user_func(function($extKey) {
+call_user_func(function() {
 
 	/** @var \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry $rendererRegistry */
 	$rendererRegistry = \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry::getInstance();
@@ -14,5 +14,4 @@ call_user_func(function($extKey) {
 	// which is only present in `textmedia` CType by default
 	$GLOBALS['TYPO3_CONF_VARS']['SYS']['mediafile_ext'] .= ',json';
 
-}, $_EXTKEY);
-
+});
