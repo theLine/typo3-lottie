@@ -6,7 +6,7 @@
     "gulp-sourcemaps": "^2.6.5",
     "gulp-uglify": "^3.0.2",
     "in-view": "^0.6.1",
-    "lottie-web": "^5.6.6",
+    "lottie-web": "^5.7.1",
     "merge-stream": "^2.0.0"
   },
   "name": "typo3-lottie",
