@@ -10,6 +10,8 @@ call_user_func(function($extKey) {
 	);
 	unset($rendererRegistry);
 
+	// Allow JSON files to be added to `tt_content.assets`,
+	// which is only present in `textmedia` CType by default
 	$GLOBALS['TYPO3_CONF_VARS']['SYS']['mediafile_ext'] .= ',json';
 
 }, $_EXTKEY);
