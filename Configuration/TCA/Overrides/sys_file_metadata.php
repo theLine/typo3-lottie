@@ -13,7 +13,8 @@ $columns = [
 			'items' => [
 				['', 1],
 			],
-		]
+		],
+		'displayCond' => 'USER:'. \TheLine\Lottie\Backend\DisplayConditions::class .'->checkIfIsJsonFile',
 	],
 ];
 
