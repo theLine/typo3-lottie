@@ -28,14 +28,14 @@ class DisplayConditions {
 	 */
 	public function checkIfIsJsonFile(array $parameters): bool {
 		// If the record's uid is not nor an interger return false
-		if (! isset($parameters['record']['uid'])
-			|| ! MathUtility::canBeInterpretedAsInteger($parameters['record']['uid'])
+		if (! isset($parameters['record']['file'][0])
+			|| ! MathUtility::canBeInterpretedAsInteger($parameters['record']['file'][0])
 		) {
 			return false;
 		}
 
 		// Find the File by the given uid …
-		$file = $this->getFileRepository()->findByUid($parameters['record']['uid']);
+		$file = $this->getFileRepository()->findByUid($parameters['record']['file'][0]);
 		if ($file instanceof FileInterface) {
 			// … and return true, if the File's extension is 'json';
 			return $file->getExtension() === 'json';
