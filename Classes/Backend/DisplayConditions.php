@@ -20,28 +20,35 @@ class DisplayConditions {
 
 	/**
 	 * Returns true if the given File's extension is 'json'.
-	 * The File's uid must be passed as `$parameters['record']['uid']`.
 	 *
 	 * @param array $parameters
 	 * @return bool
 	 * @throws \InvalidArgumentException
 	 */
 	public function checkIfIsJsonFile(array $parameters): bool {
-		// If the record's uid is not nor an interger return false
-		if (! isset($parameters['record']['uid'])
-			|| ! MathUtility::canBeInterpretedAsInteger($parameters['record']['uid'])
-		) {
+
+		// This record will be `sys_file_metadata` and not `sys_file`!
+		$record = &$parameters['record'];
+
+		// If the sys_file's uid is not present there must be something terribly wrong!
+		// But for now just return false.
+		if (! isset($record['file'][0])) {
 			return false;
 		}
 
-		// Find the File by the given uid …
-		$file = $this->getFileRepository()->findByUid($parameters['record']['uid']);
+		// If the sys_file's uid is not an integer return false as well
+		if (! MathUtility::canBeInterpretedAsInteger($record['file'][0])) {
+			return false;
+		}
+
+		// Find the File object by the given uid …
+		$file = $this->getFileRepository()->findByUid($record['file'][0]);
 		if ($file instanceof FileInterface) {
-			// … and return true, if the File's extension is 'json';
+			// … and return true, if the File's extension is 'json'.
 			return $file->getExtension() === 'json';
 		}
 
-		// We can be sure that the given file is not a JSON file, thus return false
+		// At this point we can be sure that the given file is not a JSON file, thus return false.
 		return false;
 	}
 

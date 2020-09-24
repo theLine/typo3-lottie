@@ -4,6 +4,8 @@ use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Utility\ExtensionManagementUtility;
 use TYPO3\CMS\Core\Utility\VersionNumberUtility;
 
+use TheLine\Lottie\Backend\DisplayConditions;
+
 call_user_func(function() {
 
 	$columns = [
@@ -16,7 +18,7 @@ call_user_func(function() {
 					['', 1],
 				],
 			],
-			'displayCond' => 'USER:'. \TheLine\Lottie\Backend\DisplayConditions::class .'->checkIfIsJsonFile',
+			'displayCond' => 'USER:'. DisplayConditions::class .'->checkIfIsJsonFile',
 		],
 	];
 
