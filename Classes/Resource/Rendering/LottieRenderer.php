@@ -88,12 +88,19 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			unset($localProcessingFile);
 		}
 
+		// If the public URL is not an absolute URL or not starting with a slash
+		// let's put a slash in front of the URL.
+		$publicUrl = $file->getPublicUrl($usedPathsRelativeToCurrentScript);
+		if (! preg_match('#^(https?://|/)#', $publicUrl)) {
+			$publicUrl = '/'. $publicUrl;
+		}
+
 		$containerAttributes = [
 		];
 
 		$attributes = [
 			'data-name' => 'lottie' . $instanceType . $file->getUid(),
-			'data-animation-path' => $file->getPublicUrl($usedPathsRelativeToCurrentScript),
+			'data-animation-path' => $publicUrl,
 			'data-anim-autoplay' => 'false',
 			'data-anim-loop' => 'true',
 			'data-bm-renderer' => 'svg',
