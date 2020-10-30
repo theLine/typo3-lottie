@@ -101,14 +101,15 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		);
 
 		// Make sure that all attributes are properly escaped
-		$attributes = implode(' ', array_map(
+		$attributes = array_map(
 			function ($key, $value) {
-				return $key .'="'. htmlspecialchars($value) .'"';
+				return sprintf('%s=%s', $key, htmlspecialchars($value));
 			},
-			array_keys($attributes), $attributes
-		));
+			array_keys($attributes),
+			$attributes
+		);
 
-		$output = '<div class="lottie" '. $attributes .'></div>';
+		$output = sprintf('<div class="lottie" %s></div>', implode(' ', $attributes));
 		return $output;
 	}
 
