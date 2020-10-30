@@ -70,17 +70,28 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			break;
 		}
 
-		// @TODO: Try to read the width/height and set it accordingly to prevent jumping of content
-		// $styles = [];
-		// if ($width) {
-		// 	$styles[] = 'width:'. (int)$width .'px';
-		// }
-		// if ($height) {
-		// 	$styles[] = 'height:'. (int)$height .'px';
-		// }
+		$width = (int)$width;
+		$height = (int)$height;
+
+		// If no valid dimensions were provided, let's try to read the dimensions from the Lottie animation itself
+		if ($width === 0 || $height === 0) {
+			$localProcessingFile = file_get_contents($file->getForLocalProcessing(false));
+			$fileData = json_decode($localProcessingFile);
+
+			if (isset($fileData->w)) {
+				$width = (int)$fileData->w;
+			}
+			if (isset($fileData->h)) {
+				$height = (int)$fileData->h;
+			}
+			unset($fileData);
+			unset($localProcessingFile);
+		}
+
+		$containerAttributes = [
+		];
 
 		$attributes = [
-			// 'style' => implode(';', $styles),
 			'data-name' => 'lottie' . $instanceType . $file->getUid(),
 			'data-animation-path' => $file->getPublicUrl($usedPathsRelativeToCurrentScript),
 			'data-anim-autoplay' => 'false',
@@ -88,6 +99,17 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			'data-bm-renderer' => 'svg',
 		];
 
+		// If the width and height could be properly determined, add some inline styling
+		// to preserve the required space to prevent visual content shifting.
+		// This could be rewritten more nicely for TYPO3 CMS v10,
+		// but to maintain backwards compatibility just keep it like it is for now.
+		if ($width > 0 && $height > 0) {
+			$containerAttributes['style'] = sprintf(
+				'position:relative;overflow:hidden;padding-top:%g%%',
+				($height / $width) * 100
+			);
+			$attributes['style'] = 'position:absolute;top:0;left:0;width:100%;height:100%';
+		}
 		// Dispatch signal to enable modifying of attributes
 		// This Signal expects no return value(s) rather than changes made via pass-by-reference
 		$this->getSignalSlotDispatcher()->dispatch(
@@ -101,16 +123,32 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		);
 
 		// Make sure that all attributes are properly escaped
-		$attributes = array_map(
+		$containerAttributes = static::escapeAttributes($containerAttributes);
+		$attributes = static::escapeAttributes($attributes);
+
+		$output = sprintf(
+			'<div class="lottie-container" %s><div class="lottie" %s></div></div>',
+			implode(' ', $containerAttributes),
+			implode(' ', $attributes)
+		);
+		return $output;
+	}
+
+	/**
+	 * Returns an array where the given $attribute key/value pairs will be escaped
+	 * by using htmlspecialchars and prepared for direct usage in HTML.
+	 *
+	 * @param  array $attributes
+	 * @return array
+	 */
+	public static function escapeAttributes($attributes) {
+		return array_map(
 			function ($key, $value) {
 				return sprintf('%s=%s', $key, htmlspecialchars($value));
 			},
 			array_keys($attributes),
 			$attributes
 		);
-
-		$output = sprintf('<div class="lottie" %s></div>', implode(' ', $attributes));
-		return $output;
 	}
 
 	/**
@@ -120,4 +158,5 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	protected function getSignalSlotDispatcher() {
 		return GeneralUtility::makeInstance(Dispatcher::class);
 	}
+
 }
