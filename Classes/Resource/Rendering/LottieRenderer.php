@@ -6,17 +6,32 @@ use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
+use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface {
 
+	/** @var array List of options that will be passed to the HTML output */
+	protected static $keepOptionsAsAttributes = [
+		'class',
+		'dir',
+		'id',
+		'lang',
+		'style',
+		'title',
+		'accesskey',
+		'tabindex',
+		'onclick',
+		'alt',
+	];
+
 	/**
-	 * Returns the priority of the renderer
+	 * Returns the priority of the renderer.
 	 * This way it is possible to define/overrule a renderer
 	 * for a specific file type/context.
 	 *
 	 * For example create a video renderer for a certain storage/driver type.
 	 *
-	 * Should be between 1 and 100, 100 is more important than 1
+	 * Should be between 1 and 100, 100 is more important than 1.
 	 *
 	 * @return int
 	 */
@@ -25,7 +40,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	}
 
 	/**
-	 * Check if given File(Reference) can be rendered
+	 * Check if given File(Reference) can be rendered.
 	 *
 	 * @param FileInterface $file File or FileReference to render
 	 * @return bool
@@ -42,7 +57,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	}
 
 	/**
-	 * Render for given File(Reference) HTML output
+	 * Render for given File(Reference) HTML output.
 	 *
 	 * @param FileInterface $file
 	 * @param int|string $width TYPO3 known format; examples: 220, 200m or 200c
@@ -59,7 +74,12 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		$usedPathsRelativeToCurrentScript = false
 	) {
 
-		// It may be useful to know if $file was a File or FileReference
+		/** @var TagBuilder $container */
+		$containerTag = new TagBuilder('div');
+		/** @var TagBuilder $lottie */
+		$lottieTag = new TagBuilder('div');
+
+		// It may be useful to know if $file was a File or FileReference.
 		$instanceType = '';
 		switch (get_class($file)) {
 			case File::class:
@@ -73,7 +93,8 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		$width = (int)$width;
 		$height = (int)$height;
 
-		// If no valid dimensions were provided, let's try to read the dimensions from the Lottie animation itself
+		// If no valid dimensions were provided
+		// let's try to read the dimensions from the Lottie animation itself.
 		if ($width === 0 || $height === 0) {
 			$localProcessingFile = file_get_contents($file->getForLocalProcessing(false));
 			$fileData = json_decode($localProcessingFile);
@@ -88,6 +109,42 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			unset($localProcessingFile);
 		}
 
+
+		foreach ($options as $attributeName => $attributeValue) {
+			if (in_array($attributeName, static::$keepOptionsAsAttributes) && ! empty($attributeValue)) {
+				$lottieTag->addAttribute($attributeName, $attributeValue);
+			}
+		}
+
+
+		// Make sure that the required "lottie" class will be added
+		$class = $lottieTag->getAttribute('class') ?? '';
+		$lottieTag->addAttribute('class', trim($class .' lottie'));
+
+		$containerTag->addAttribute('class', 'lottie-container');
+
+
+		// If the width and height could be properly determined, add some
+		// inline styling to preserve the required space to prevent
+		// visual content shifts.
+		// This could be rewritten more nicely for TYPO3 CMS v10,
+		// but to maintain backwards compatibility let's keep it like
+		// this for now.
+		if ($width > 0 && $height > 0) {
+			$containerTag->addAttribute(
+				'style',
+				sprintf(
+					'position:relative;overflow:hidden;padding-top:%g%%',
+					($height / $width) * 100
+				)
+			);
+			$lottieTag->addAttribute(
+				'style',
+				'position:absolute;top:0;left:0;width:100%;height:100%'
+			);
+		}
+
+
 		// If the public URL is not an absolute URL or not starting with a slash
 		// let's put a slash in front of the URL.
 		$publicUrl = $file->getPublicUrl($usedPathsRelativeToCurrentScript);
@@ -95,68 +152,43 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			$publicUrl = '/'. $publicUrl;
 		}
 
-		$containerAttributes = [
-		];
+		$dataAttributes = array_merge(
+			[
+				'name' => 'lottie' . $instanceType . $file->getUid(),
+				'animation-path' => $publicUrl,
+				'anim-autoplay' => 'false',
+				'anim-loop' => 'true',
+				'bm-renderer' => 'svg',
+			],
+			$options['data'] ?? []
+		);
+		$lottieTag->addAttribute('data', $dataAttributes);
 
-		$attributes = [
-			'data-name' => 'lottie' . $instanceType . $file->getUid(),
-			'data-animation-path' => $publicUrl,
-			'data-anim-autoplay' => 'false',
-			'data-anim-loop' => 'true',
-			'data-bm-renderer' => 'svg',
-		];
 
-		// If the width and height could be properly determined, add some inline styling
-		// to preserve the required space to prevent visual content shifting.
-		// This could be rewritten more nicely for TYPO3 CMS v10,
-		// but to maintain backwards compatibility just keep it like it is for now.
-		if ($width > 0 && $height > 0) {
-			$containerAttributes['style'] = sprintf(
-				'position:relative;overflow:hidden;padding-top:%g%%',
-				($height / $width) * 100
-			);
-			$attributes['style'] = 'position:absolute;top:0;left:0;width:100%;height:100%';
-		}
-		// Dispatch signal to enable modifying of attributes
+		// Dispatch signal to enable modifying of data
 		// This Signal expects no return value(s) rather than changes made via pass-by-reference
 		$this->getSignalSlotDispatcher()->dispatch(
 			__CLASS__,
-			'manipulateAttributesBeforeRender',
+			'manipulateOutputBeforeRender',
 			[
-				&$attributes,
-				$file,
 				$this,
+				$file,
+				$width,
+				$height,
+				$options,
+				$usedPathsRelativeToCurrentScript,
+				$containerTag,
+				$lottieTag,
 			]
 		);
 
-		// Make sure that all attributes are properly escaped
-		$containerAttributes = static::escapeAttributes($containerAttributes);
-		$attributes = static::escapeAttributes($attributes);
 
-		$output = sprintf(
-			'<div class="lottie-container" %s><div class="lottie" %s></div></div>',
-			implode(' ', $containerAttributes),
-			implode(' ', $attributes)
+		$containerTag->setContent(
+			$lottieTag->render()
 		);
-		return $output;
+		return $containerTag->render();
 	}
 
-	/**
-	 * Returns an array where the given $attribute key/value pairs will be escaped
-	 * by using htmlspecialchars and prepared for direct usage in HTML.
-	 *
-	 * @param  array $attributes
-	 * @return array
-	 */
-	public static function escapeAttributes($attributes) {
-		return array_map(
-			function ($key, $value) {
-				return sprintf('%s=%s', $key, htmlspecialchars($value));
-			},
-			array_keys($attributes),
-			$attributes
-		);
-	}
 
 	/**
 	 * Returns the SignalSlot/Dispatcher instance
