@@ -13,5 +13,6 @@
   },
   "name": "typo3-lottie",
   "version": "1.0.0",
-  "license": "LGPL-3.0-or-later"
+  "license": "LGPL-3.0-or-later",
+  "private": true
 }
