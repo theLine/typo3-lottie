@@ -1,4 +1,12 @@
 <?php
+
+/*
+ * This file is part of the "lottie" Extension for TYPO3 CMS.
+ * For the full copyright and license information, please read the LICENSE file
+ * that was distributed with this source code.
+ * (c) 2019-2020
+ */
+
 namespace TheLine\Lottie\Backend;
 
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -14,7 +22,7 @@ class DisplayConditions {
 	/**
 	 * @param FileRepository $fileRepository
 	 */
-	public function injectFileRepository (FileRepository $fileRepository) {
+	public function injectFileRepository(FileRepository $fileRepository) {
 		$this->fileRepository = $fileRepository;
 	}
 
@@ -22,8 +30,8 @@ class DisplayConditions {
 	 * Returns true if the given File's extension is 'json'.
 	 *
 	 * @param array $parameters
-	 * @return bool
 	 * @throws \InvalidArgumentException
+	 * @return bool
 	 */
 	public function checkIfIsJsonFile(array $parameters): bool {
 

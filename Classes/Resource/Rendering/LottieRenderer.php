@@ -1,4 +1,12 @@
 <?php
+
+/*
+ * This file is part of the "lottie" Extension for TYPO3 CMS.
+ * For the full copyright and license information, please read the LICENSE file
+ * that was distributed with this source code.
+ * (c) 2019-2020
+ */
+
 namespace TheLine\Lottie\Resource\Rendering;
 
 use TYPO3\CMS\Core\Resource\File;
@@ -50,10 +58,10 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			? $file->getOriginalFile()
 			: $file
 		;
-		return (
+		return
 			$file->getExtension() === 'json'
 			&& $file->getProperty('tx_lottie_is_lottie_animation')
-		);
+		;
 	}
 
 	/**
@@ -119,7 +127,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 
 		// Make sure that the required "lottie" class will be added
 		$class = $lottieTag->getAttribute('class') ?? '';
-		$lottieTag->addAttribute('class', trim($class .' lottie'));
+		$lottieTag->addAttribute('class', trim($class . ' lottie'));
 
 		$containerTag->addAttribute('class', 'lottie-container');
 
@@ -149,7 +157,7 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		// let's put a slash in front of the URL.
 		$publicUrl = $file->getPublicUrl($usedPathsRelativeToCurrentScript);
 		if (! preg_match('#^(https?://|/)#', $publicUrl)) {
-			$publicUrl = '/'. $publicUrl;
+			$publicUrl = '/' . $publicUrl;
 		}
 
 		$dataAttributes = array_merge(
@@ -197,5 +205,4 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	protected function getSignalSlotDispatcher() {
 		return GeneralUtility::makeInstance(Dispatcher::class);
 	}
-
 }
