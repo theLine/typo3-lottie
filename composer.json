@@ -20,6 +20,9 @@
         "php": ">=7.1",
         "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
     },
+    "require-dev": {
+        "php-parallel-lint/php-parallel-lint": "^1.2"
+    },
     "autoload": {
         "psr-4": {
             "TheLine\\Lottie\\": "Classes"
@@ -32,6 +35,12 @@
     "scripts": {
         "_cleanup": [
             "rm -rf vendor .Build composer.lock"
+        ],
+        "test": [
+            "@test-php-lint"
+        ],
+        "test-php-lint": [
+            "parallel-lint ./Classes/ ./Configuration/TCA/"
         ]
     },
     "config": {
