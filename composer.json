@@ -22,7 +22,8 @@
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
-        "friendsofphp/php-cs-fixer": "^2.0"
+        "friendsofphp/php-cs-fixer": "^2.0",
+        "helmich/typo3-typoscript-lint": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -39,7 +40,8 @@
         ],
         "test": [
             "@test-php-lint",
-            "@test-phpcs"
+            "@test-phpcs",
+            "@test-typoscript-lint"
         ],
         "test-php-lint": [
             "parallel-lint ./Classes/ ./Configuration/TCA/"
@@ -49,6 +51,9 @@
         ],
         "test-phpcs-fix": [
             "php-cs-fixer fix -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+        ],
+        "test-typoscript-lint": [
+            "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/ ./Configuration/TsConfig/"
         ]
     },
     "config": {
