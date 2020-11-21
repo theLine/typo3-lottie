@@ -21,7 +21,8 @@
         "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
     },
     "require-dev": {
-        "php-parallel-lint/php-parallel-lint": "^1.2"
+        "php-parallel-lint/php-parallel-lint": "^1.0",
+        "friendsofphp/php-cs-fixer": "^2.0"
     },
     "autoload": {
         "psr-4": {
@@ -37,10 +38,17 @@
             "rm -rf vendor .Build composer.lock"
         ],
         "test": [
-            "@test-php-lint"
+            "@test-php-lint",
+            "@test-phpcs"
         ],
         "test-php-lint": [
             "parallel-lint ./Classes/ ./Configuration/TCA/"
+        ],
+        "test-phpcs": [
+            "php-cs-fixer fix --dry-run -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+        ],
+        "test-phpcs-fix": [
+            "php-cs-fixer fix -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
         ]
     },
     "config": {
