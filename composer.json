@@ -17,8 +17,8 @@
     ],
     "license": "LGPL-3.0-or-later",
     "require": {
-        "php": ">=7.1",
-        "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
+        "php": ">=7.4",
+        "typo3/cms-core": "^11.5"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
