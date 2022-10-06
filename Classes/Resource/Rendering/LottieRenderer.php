@@ -9,15 +9,24 @@
 
 namespace TheLine\Lottie\Resource\Rendering;
 
+use ManipulateOutputBeforeRender;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
 class LottieRenderer implements FileRendererInterface {
+
+	/**
+	 * @var EventDispatcherInterface
+	 */
+	private $eventDispatcher;
+
+	public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void {
+		$this->eventDispatcher = $eventDispatcher;
+	}
 
 	/** @var array List of options that will be passed to the HTML output */
 	protected static $keepOptionsAsAttributes = [
@@ -163,13 +172,11 @@ class LottieRenderer implements FileRendererInterface {
 		);
 		$lottieTag->addAttribute('data', $dataAttributes);
 
-
-		// Dispatch signal to enable modifying of data
-		// This Signal expects no return value(s) rather than changes made via pass-by-reference
-		$this->getSignalSlotDispatcher()->dispatch(
-			__CLASS__,
-			'manipulateOutputBeforeRender',
-			[
+		/**
+		 * @var ManipulateOutputBeforeRender $event
+		 */
+		$event = $this->eventDispatcher->dispatch(
+			new ManipulateOutputBeforeRender(
 				$this,
 				$file,
 				$width,
@@ -177,22 +184,15 @@ class LottieRenderer implements FileRendererInterface {
 				$options,
 				$usedPathsRelativeToCurrentScript,
 				$containerTag,
-				$lottieTag,
-			]
+				$lottieTag
+			)
 		);
-
+		$containerTag = $event->getContainerTag();
+		$lottieTag = $event->getLottieTag();
 
 		$containerTag->setContent(
 			$lottieTag->render()
 		);
 		return $containerTag->render();
-	}
-
-
-	/**
-	 * Returns the SignalSlot/Dispatcher instance
-	 */
-	protected function getSignalSlotDispatcher(): Dispatcher {
-		return GeneralUtility::makeInstance(Dispatcher::class);
 	}
 }
