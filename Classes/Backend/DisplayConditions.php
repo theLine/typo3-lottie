@@ -19,19 +19,14 @@ class DisplayConditions {
 	/** @var FileRepository $fileRepository */
 	protected $fileRepository;
 
-	/**
-	 * @param FileRepository $fileRepository
-	 */
-	public function injectFileRepository(FileRepository $fileRepository) {
+	public function injectFileRepository(FileRepository $fileRepository): void {
 		$this->fileRepository = $fileRepository;
 	}
 
 	/**
 	 * Returns true if the given File's extension is 'json'.
 	 *
-	 * @param array $parameters
 	 * @throws \InvalidArgumentException
-	 * @return bool
 	 */
 	public function checkIfIsJsonFile(array $parameters): bool {
 
@@ -60,13 +55,11 @@ class DisplayConditions {
 		return false;
 	}
 
-	/**
-	 * @return FileRepository
-	 */
 	protected function getFileRepository(): FileRepository {
 		if (! $this->fileRepository instanceof FileRepository) {
 			$this->fileRepository = GeneralUtility::makeInstance(FileRepository::class);
 		}
+
 		return $this->fileRepository;
 	}
 }

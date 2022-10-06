@@ -1,12 +1,15 @@
 <?php
-defined('TYPO3_MODE') or die();
+use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
+use RectorPrefix20220604\TYPO3\CMS\Core\Utility\GeneralUtility;
+use TheLine\Lottie\Resource\Rendering\LottieRenderer;
+defined('TYPO3') || die();
 
 call_user_func(function() {
 
-	/** @var \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry $rendererRegistry */
-	$rendererRegistry = \TYPO3\CMS\Core\Resource\Rendering\RendererRegistry::getInstance();
+	/** @var RendererRegistry $rendererRegistry */
+	$rendererRegistry = GeneralUtility::makeInstance(RendererRegistry::class);
 	$rendererRegistry->registerRendererClass(
-		\TheLine\Lottie\Resource\Rendering\LottieRenderer::class
+		LottieRenderer::class
 	);
 	unset($rendererRegistry);
 
