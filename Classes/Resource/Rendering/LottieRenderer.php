@@ -4,7 +4,7 @@
  * This file is part of the "lottie" Extension for TYPO3 CMS.
  * For the full copyright and license information, please read the LICENSE file
  * that was distributed with this source code.
- * (c) 2019-2020
+ * (c) 2019-2022
  */
 
 namespace TheLine\Lottie\Resource\Rendering;
@@ -76,7 +76,6 @@ class LottieRenderer implements FileRendererInterface {
 		array $options = [],
 		$usedPathsRelativeToCurrentScript = false
 	): string {
-
 		$containerTag = new TagBuilder('div');
 		$lottieTag = new TagBuilder('div');
 
