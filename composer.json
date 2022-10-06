@@ -47,13 +47,13 @@
             "parallel-lint ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs": [
-            "php-cs-fixer fix --dry-run -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix --dry-run -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs-fix": [
-            "php-cs-fixer fix -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
         ],
         "test-typoscript-lint": [
-            "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/ ./Configuration/TsConfig/"
+            "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/"
         ]
     },
     "config": {
