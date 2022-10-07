@@ -9,8 +9,8 @@
 
 namespace TheLine\Lottie\Resource\Rendering;
 
-use ManipulateOutputBeforeRender;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use TheLine\Lottie\Events\ManipulateOutputBeforeRenderEvent;
 use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
@@ -173,10 +173,10 @@ class LottieRenderer implements FileRendererInterface {
 		$lottieTag->addAttribute('data', $dataAttributes);
 
 		/**
-		 * @var ManipulateOutputBeforeRender $event
+		 * @var ManipulateOutputBeforeRenderEvent $event
 		 */
 		$event = $this->eventDispatcher->dispatch(
-			new ManipulateOutputBeforeRender(
+			new ManipulateOutputBeforeRenderEvent(
 				$this,
 				$file,
 				$width,

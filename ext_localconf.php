@@ -1,6 +1,6 @@
 <?php
 use TYPO3\CMS\Core\Resource\Rendering\RendererRegistry;
-use RectorPrefix20220604\TYPO3\CMS\Core\Utility\GeneralUtility;
+use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TheLine\Lottie\Resource\Rendering\LottieRenderer;
 defined('TYPO3') || die();
 

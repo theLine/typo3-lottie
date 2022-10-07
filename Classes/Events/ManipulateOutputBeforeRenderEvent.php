@@ -8,12 +8,13 @@
  */
 
 declare(strict_types=1);
+namespace TheLine\Lottie\Events;
 
 use TheLine\Lottie\Resource\Rendering\LottieRenderer;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
-final class ManipulateOutputBeforeRender {
+final class ManipulateOutputBeforeRenderEvent {
 
 	/**
 	 * @var LottieRenderer
