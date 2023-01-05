@@ -12,7 +12,7 @@ that was distributed with this source code.
 EOF;
 
 
-return PhpCsFixer\Config::create()
+return (new PhpCsFixer\Config())
 	->setRiskyAllowed(true)
 	->setRules([
 		'@DoctrineAnnotation' => true,
@@ -51,7 +51,7 @@ return PhpCsFixer\Config::create()
 			'closure_function_spacing' => 'one',
 		],
 		'function_typehint_space' => true,
-		'hash_to_slash_comment' => true,
+		'single_line_comment_style' => true,
 		'indentation_type' => true,
 		'logical_operators' => true,
 		'lowercase_cast' => true,
@@ -71,7 +71,7 @@ return PhpCsFixer\Config::create()
 		'no_empty_comment' => true,
 		'no_empty_phpdoc' => true,
 		'no_empty_statement' => true,
-		'no_extra_consecutive_blank_lines' => false,
+		'no_extra_blank_lines' => false,
 		'no_leading_import_slash' => true,
 		'no_leading_namespace_whitespace' => true,
 		'no_null_property_initialization' => true,
@@ -116,7 +116,7 @@ return PhpCsFixer\Config::create()
 
 		'header_comment' => [
 			'header' => $header,
-			'commentType' => 'comment',
+			'comment_type' => 'comment',
 			'location' => 'after_open',
 			'separate' => 'both',
 		],

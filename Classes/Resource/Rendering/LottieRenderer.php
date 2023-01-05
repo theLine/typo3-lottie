@@ -4,19 +4,29 @@
  * This file is part of the "lottie" Extension for TYPO3 CMS.
  * For the full copyright and license information, please read the LICENSE file
  * that was distributed with this source code.
- * (c) 2019-2020
+ * (c) 2019-2022
  */
 
 namespace TheLine\Lottie\Resource\Rendering;
 
+use Psr\EventDispatcher\EventDispatcherInterface;
+use TheLine\Lottie\Events\ManipulateOutputBeforeRenderEvent;
+use TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface;
 use TYPO3\CMS\Core\Resource\File;
 use TYPO3\CMS\Core\Resource\FileInterface;
 use TYPO3\CMS\Core\Resource\FileReference;
-use TYPO3\CMS\Core\Utility\GeneralUtility;
-use TYPO3\CMS\Extbase\SignalSlot\Dispatcher;
 use TYPO3Fluid\Fluid\Core\ViewHelper\TagBuilder;
 
-class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererInterface {
+class LottieRenderer implements FileRendererInterface {
+
+	/**
+	 * @var EventDispatcherInterface
+	 */
+	private $eventDispatcher;
+
+	public function injectEventDispatcher(EventDispatcherInterface $eventDispatcher): void {
+		$this->eventDispatcher = $eventDispatcher;
+	}
 
 	/** @var array List of options that will be passed to the HTML output */
 	protected static $keepOptionsAsAttributes = [
@@ -40,10 +50,8 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	 * For example create a video renderer for a certain storage/driver type.
 	 *
 	 * Should be between 1 and 100, 100 is more important than 1.
-	 *
-	 * @return int
 	 */
-	public function getPriority() {
+	public function getPriority(): int {
 		return 10;
 	}
 
@@ -51,9 +59,8 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	 * Check if given File(Reference) can be rendered.
 	 *
 	 * @param FileInterface $file File or FileReference to render
-	 * @return bool
 	 */
-	public function canRender(FileInterface $file) {
+	public function canRender(FileInterface $file): bool {
 		$file = $file instanceof FileReference
 			? $file->getOriginalFile()
 			: $file
@@ -67,12 +74,9 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 	/**
 	 * Render for given File(Reference) HTML output.
 	 *
-	 * @param FileInterface $file
 	 * @param int|string $width TYPO3 known format; examples: 220, 200m or 200c
 	 * @param int|string $height TYPO3 known format; examples: 220, 200m or 200c
-	 * @param array $options
 	 * @param bool $usedPathsRelativeToCurrentScript See $file->getPublicUrl()
-	 * @return string
 	 */
 	public function render(
 		FileInterface $file,
@@ -80,22 +84,16 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		$height,
 		array $options = [],
 		$usedPathsRelativeToCurrentScript = false
-	) {
-
-		/** @var TagBuilder $container */
+	): string {
 		$containerTag = new TagBuilder('div');
-		/** @var TagBuilder $lottie */
 		$lottieTag = new TagBuilder('div');
 
 		// It may be useful to know if $file was a File or FileReference.
 		$instanceType = '';
-		switch (get_class($file)) {
-			case File::class:
-				$instanceType = 'File';
-			break;
-			case FileReference::class:
-				$instanceType = 'FileReference';
-			break;
+		if (get_class($file) == File::class) {
+			$instanceType = 'File';
+		} elseif (get_class($file) == FileReference::class) {
+			$instanceType = 'FileReference';
 		}
 
 		$width = (int)$width;
@@ -107,12 +105,14 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 			$localProcessingFile = file_get_contents($file->getForLocalProcessing(false));
 			$fileData = json_decode($localProcessingFile);
 
-			if (isset($fileData->w)) {
+			if (property_exists($fileData, 'w') && $fileData->w !== null) {
 				$width = (int)$fileData->w;
 			}
-			if (isset($fileData->h)) {
+
+			if (property_exists($fileData, 'h') && $fileData->h !== null) {
 				$height = (int)$fileData->h;
 			}
+
 			unset($fileData);
 			unset($localProcessingFile);
 		}
@@ -172,13 +172,11 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 		);
 		$lottieTag->addAttribute('data', $dataAttributes);
 
-
-		// Dispatch signal to enable modifying of data
-		// This Signal expects no return value(s) rather than changes made via pass-by-reference
-		$this->getSignalSlotDispatcher()->dispatch(
-			__CLASS__,
-			'manipulateOutputBeforeRender',
-			[
+		/**
+		 * @var ManipulateOutputBeforeRenderEvent $event
+		 */
+		$event = $this->eventDispatcher->dispatch(
+			new ManipulateOutputBeforeRenderEvent(
 				$this,
 				$file,
 				$width,
@@ -186,23 +184,15 @@ class LottieRenderer implements \TYPO3\CMS\Core\Resource\Rendering\FileRendererI
 				$options,
 				$usedPathsRelativeToCurrentScript,
 				$containerTag,
-				$lottieTag,
-			]
+				$lottieTag
+			)
 		);
-
+		$containerTag = $event->getContainerTag();
+		$lottieTag = $event->getLottieTag();
 
 		$containerTag->setContent(
 			$lottieTag->render()
 		);
 		return $containerTag->render();
-	}
-
-
-	/**
-	 * Returns the SignalSlot/Dispatcher instance
-	 * @return Dispatcher
-	 */
-	protected function getSignalSlotDispatcher() {
-		return GeneralUtility::makeInstance(Dispatcher::class);
 	}
 }

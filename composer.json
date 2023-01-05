@@ -17,8 +17,9 @@
     ],
     "license": "LGPL-3.0-or-later",
     "require": {
-        "php": ">=7.1",
-        "typo3/cms-core": "^8.7 || ^9.5 || ^10.4"
+        "php": ">=7.4",
+        "typo3/cms-core": "^11.5",
+        "ext-json": "*"
     },
     "require-dev": {
         "php-parallel-lint/php-parallel-lint": "^1.0",
@@ -47,18 +48,22 @@
             "parallel-lint ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs": [
-            "php-cs-fixer fix --dry-run -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix --dry-run -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs-fix": [
-            "php-cs-fixer fix -v --config=.php_cs.dist --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
         ],
         "test-typoscript-lint": [
-            "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/ ./Configuration/TsConfig/"
+            "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/"
         ]
     },
     "config": {
         "vendor-dir": ".Build/vendor",
-        "bin-dir": ".Build/bin"
+        "bin-dir": ".Build/bin",
+        "allow-plugins": {
+            "typo3/cms-composer-installers": true,
+            "typo3/class-alias-loader": true
+        }
     },
     "extra": {
         "typo3/cms": {
