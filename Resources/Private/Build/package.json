@@ -1,4 +1,8 @@
 {
+  "name": "typo3-lottie",
+  "version": "1.0.0",
+  "license": "LGPL-3.0-or-later",
+  "private": true,
   "dependencies": {
     "gulp": "^4.0.2",
     "gulp-clean": "^0.4.0",
@@ -11,8 +15,9 @@
     "merge-stream": "^2.0.0",
     "yargs": "^16.0.3"
   },
-  "name": "typo3-lottie",
-  "version": "1.0.0",
-  "license": "LGPL-3.0-or-later",
-  "private": true
+  "scripts": {
+    "build": "gulp",
+    "clean": "gulp clean",
+    "watch": "gulp watch"
+  }
 }
