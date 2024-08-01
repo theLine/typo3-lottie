@@ -11,7 +11,7 @@ $EM_CONF[$_EXTKEY] = [
 	'author_email' => 'typo3@theline.uber.space',
 	'constraints' => [
 		'depends' => [
-			'typo3' => '8.7.0-10.4.99',
+			'typo3' => '11.0.0-11.5.99',
 		],
 		'conflicts' => [
 		],
