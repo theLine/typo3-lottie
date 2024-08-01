@@ -19,6 +19,7 @@
     "require": {
         "php": ">=7.4",
         "typo3/cms-core": "^11.5",
+        "typo3/cms-filemetadata": "^11.5",
         "ext-json": "*"
     },
     "require-dev": {
