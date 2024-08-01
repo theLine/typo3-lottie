@@ -17,7 +17,7 @@
     ],
     "license": "LGPL-3.0-or-later",
     "require": {
-        "php": ">=7.4",
+        "php": ">=7.4 || >=8.0",
         "typo3/cms-core": "^11.5",
         "typo3/cms-filemetadata": "^11.5",
         "ext-json": "*"
@@ -33,8 +33,9 @@
         "typo3/cms-recordlist": "*",
         "typo3/cms-tstemplate": "*",
         "php-parallel-lint/php-parallel-lint": "^1.0",
-        "friendsofphp/php-cs-fixer": "^2.0",
-        "helmich/typo3-typoscript-lint": "^2.0"
+        "typo3/coding-standards": "^0.7 || ^0.8",
+        "friendsofphp/php-cs-fixer": "^3.61",
+        "helmich/typo3-typoscript-lint": "^2.0 || ^3.2"
     },
     "autoload": {
         "psr-4": {
@@ -58,10 +59,10 @@
             "parallel-lint ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs": [
-            "php-cs-fixer fix --dry-run -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix --dry-run -v --config=.php-cs-fixer.dist.php ./Classes/ ./Configuration/TCA/"
         ],
         "test-phpcs-fix": [
-            "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php --using-cache false --diff --diff-format=udiff ./Classes/ ./Configuration/TCA/"
+            "php-cs-fixer fix -v --config=.php-cs-fixer.dist.php ./Classes/ ./Configuration/TCA/"
         ],
         "test-typoscript-lint": [
             "typoscript-lint -c Configuration/TypoScriptLintConfig.yaml -n --fail-on-warnings ./Configuration/TypoScript/"

@@ -313,4 +313,4 @@ $RECYCLE.BIN/
 var
 *GENERATED*
 composer.lock
-.php_cs.cache
+.php-cs-fixer.cache
