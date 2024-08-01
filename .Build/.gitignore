@@ -1,0 +1,5 @@
+*
+!.gitignore
+!fileadmin
+!typo3conf
+!ddev-database.sql

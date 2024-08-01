@@ -23,6 +23,15 @@
         "ext-json": "*"
     },
     "require-dev": {
+        "typo3/cms-backend": "*",
+        "typo3/cms-filelist": "*",
+        "typo3/cms-fluid-styled-content": "*",
+        "typo3/cms-frontend": "*",
+        "typo3/cms-impexp": "*",
+        "typo3/cms-install": "*",
+        "typo3/cms-lowlevel": "*",
+        "typo3/cms-recordlist": "*",
+        "typo3/cms-tstemplate": "*",
         "php-parallel-lint/php-parallel-lint": "^1.0",
         "friendsofphp/php-cs-fixer": "^2.0",
         "helmich/typo3-typoscript-lint": "^2.0"
@@ -38,7 +47,7 @@
     },
     "scripts": {
         "_cleanup": [
-            "rm -rf vendor .Build composer.lock"
+            "rm -rf .Build composer.lock"
         ],
         "test": [
             "@test-php-lint",

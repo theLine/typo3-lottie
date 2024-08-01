@@ -310,7 +310,7 @@ $RECYCLE.BIN/
 
 
 # ignore generated files
+var
 *GENERATED*
-/.Build
 composer.lock
 .php_cs.cache
